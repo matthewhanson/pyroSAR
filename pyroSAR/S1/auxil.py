@@ -269,7 +269,10 @@ class OSV(object):
         delete all RES files for whose date a POE file exists
         """
         maxdate_poe = self.maxdate('POE', 'stop')
-        deprecated = [x for x in self.getLocals('RES') if self.date(x, 'stop') < maxdate_poe]
+        if maxdate_poe:
+            deprecated = [x for x in self.getLocals('RES') if self.date(x, 'stop') < maxdate_poe]
+        else:
+            deprecated = []
         print('deleting {} RES file{}'.format(len(deprecated), '' if len(deprecated) == 1 else 's'))
         for item in deprecated:
             os.remove(item)
