@@ -152,7 +152,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     :class:`spatialist.vector.Vector`,
     :func:`spatialist.auxil.crsConvert()`
     """
-    
+    print('geocode start')
     if isinstance(infile, pyroSAR.ID):
         id = infile
     elif isinstance(infile, str):
@@ -162,7 +162,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
         id = ids[0]
     else:
         raise TypeError("'infile' must be of type str, list or pyroSAR.ID")
-    
+    print('identified')
     if id.is_processed(outdir):
         print('scene {} already processed'.format(id.outname_base()))
         return
