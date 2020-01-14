@@ -128,8 +128,8 @@ def identify_many(scenes, verbose=True, sortkey=None):
     >>> ids = identify_many(files, verbose=False, sortkey='start')
     """
     idlist = []
-    if verbose:
-        pbar = pb.ProgressBar(max_value=len(scenes)).start()
+    #if verbose:
+    #    pbar = pb.ProgressBar(max_value=len(scenes)).start()
     for i, scene in enumerate(scenes):
         if isinstance(scene, ID):
             idlist.append(scene)
@@ -139,10 +139,10 @@ def identify_many(scenes, verbose=True, sortkey=None):
                 idlist.append(id)
             except RuntimeError:
                 continue
-        if verbose:
-            pbar.update(i + 1)
-    if verbose:
-        pbar.finish()
+        #if verbose:
+        #    pbar.update(i + 1)
+    #if verbose:
+    #    pbar.finish()
     if sortkey is not None:
         idlist.sort(key=operator.attrgetter(sortkey))
     return idlist
@@ -1679,10 +1679,10 @@ class Archive(object):
         
         counter_regulars = 0
         counter_duplicates = 0
-        pbar = None
-        if verbose:
-            print('inserting scenes into temporary database...')
-            pbar = pb.ProgressBar(max_value=len(scenes))
+        #pbar = None
+        #if verbose:
+        #    print('inserting scenes into temporary database...')
+        #    pbar = pb.ProgressBar(max_value=len(scenes))
         cursor = self.conn.cursor()
         for i, id in enumerate(scenes):
             insert_string, insertion = self.__prepare_insertion(id)
@@ -1697,10 +1697,10 @@ class Archive(object):
                     counter_duplicates += 1
                 else:
                     raise e
-            if pbar is not None:
-                pbar.update(i + 1)
-        if pbar is not None:
-            pbar.finish()
+            #if pbar is not None:
+            #    pbar.update(i + 1)
+        #if pbar is not None:
+        #    pbar.finish()
         if not test:
             if verbose:
                 print('committing transactions to permanent database...')
@@ -1877,7 +1877,7 @@ class Archive(object):
             raise RuntimeError('directory cannot be written to')
         failed = []
         double = []
-        pbar = pb.ProgressBar(max_value=len(scenelist)).start()
+        #pbar = pb.ProgressBar(max_value=len(scenelist)).start()
         cursor = self.conn.cursor()
         for i, scene in enumerate(scenelist):
             new = os.path.join(directory, os.path.basename(scene))
@@ -1890,7 +1890,7 @@ class Archive(object):
                 failed.append(scene)
                 continue
             finally:
-                pbar.update(i + 1)
+                #pbar.update(i + 1)
             if self.select(scene=scene) != 0:
                 table = 'data'
             else:
@@ -1902,7 +1902,7 @@ class Archive(object):
             if table:
                 cursor.execute('UPDATE {} SET scene=? WHERE scene=?'.format(table), (new, scene))
                 self.conn.commit()
-        pbar.finish()
+        #pbar.finish()
         if len(failed) > 0:
             print('the following scenes could not be moved:\n{}'.format('\n'.join(failed)))
         if len(double) > 0:
