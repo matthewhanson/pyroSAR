@@ -1307,7 +1307,7 @@ class SAFE(ID):
         # create a time span with one day before and one after the acquisition
         before = (date - timedelta(days=1)).strftime('%Y%m%dT%H%M%S')
         after = (date + timedelta(days=1)).strftime('%Y%m%dT%H%M%S')
-        
+        print('downloading files from %s to %s' % (before, after))
         # download the files
         if osvType in ['POE', 'RES']:
             with S1.OSV(osvdir) as osv:

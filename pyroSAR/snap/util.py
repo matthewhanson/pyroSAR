@@ -171,11 +171,13 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
         os.makedirs(outdir)
     ############################################
     # general setup
-    
+    print('general setup')
     if id.sensor in ['ASAR', 'ERS1', 'ERS2']:
         formatName = 'ENVISAT'
     elif id.sensor in ['S1A', 'S1B']:
+        print('getting osv')
         id.getOSV()
+        print('post osv')
         if id.product == 'SLC':
             raise RuntimeError('Sentinel-1 SLC data is not supported yet')
         formatName = 'SENTINEL-1'
