@@ -9,6 +9,8 @@ from .auxil import parse_recipe, parse_node, gpt, groupbyWorkers, get_egm96_look
 
 from spatialist import crsConvert, Vector, Raster, bbox, intersect
 
+import logging
+logger = logging.getLogger(__name__)
 
 def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=None, scaling='dB',
             geocoding_type='Range-Doppler', removeS1BorderNoise=True, removeS1BorderNoiseMethod='pyroSAR',
@@ -153,6 +155,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     :func:`spatialist.auxil.crsConvert()`
     """
     print('geocode start')
+    logger.info('logging start')
     if isinstance(infile, pyroSAR.ID):
         id = infile
     elif isinstance(infile, str):
