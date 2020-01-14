@@ -527,9 +527,12 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     workflow.write(outname + '_proc')
     
     # execute the newly written workflow
+    print('running workflow')
     if not test:
         try:
             groups = groupbyWorkers(outname + '_proc.xml', groupsize)
+            print('groups', groups)
+            print('gpt_args', gpt_args)
             gpt(outname + '_proc.xml', groups=groups, cleanup=cleanup,
                 gpt_exceptions=gpt_exceptions, gpt_args=gpt_args,
                 removeS1BorderNoiseMethod=removeS1BorderNoiseMethod)
