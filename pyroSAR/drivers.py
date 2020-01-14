@@ -1889,7 +1889,7 @@ class Archive(object):
             except shutil.Error:
                 failed.append(scene)
                 continue
-            finally:
+            #finally:
                 #pbar.update(i + 1)
             if self.select(scene=scene) != 0:
                 table = 'data'
