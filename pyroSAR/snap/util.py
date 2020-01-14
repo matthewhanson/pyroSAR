@@ -217,7 +217,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     read.parameters['file'] = id.scene
     read.parameters['formatName'] = formatName
     readers = [read.id]
-    
+    print('starting creating base workflow')
     if isinstance(infile, list):
         for i in range(1, len(infile)):
             readn = parse_node('Read')
@@ -252,7 +252,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     orbitType = orbit_lookup[formatName]
     if formatName == 'ENVISAT' and id.acquisition_mode == 'WSM':
         orbitType = 'DORIS Precise VOR (ENVISAT) (Auto Download)'
-    
+    print('apply orbit file')
     orb = workflow['Apply-Orbit-File']
     orb.parameters['orbitType'] = orbitType
     ############################################
@@ -296,7 +296,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
                              'Refined Lee',
                              'Lee',
                              'Lee Sigma']
-    
+    print('speckle filter')
     if speckleFilter:
         message = '{0} must be one of the following:\n- {1}'
         if speckleFilter not in speckleFilter_options:
@@ -327,7 +327,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     
     ############################################
     # Multilook node configuration
-    
+    print('multilook')
     try:
         image_geometry = id.meta['image_geometry']
         incidence = id.meta['incidence']
@@ -340,7 +340,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
                                     tr_az=tr,
                                     geometry=image_geometry,
                                     incidence=incidence)
-    
+    print('multilook factors')
     if azlks > 1 or rlks > 1:
         workflow.insert_node(parse_node('Multilook'), before='Calibration')
         ml = workflow['Multilook']
@@ -362,7 +362,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
         t_srs = crsConvert(t_srs, 'epsg')
     except TypeError:
         raise RuntimeError("format of parameter 't_srs' not recognized")
-    
+    print('epsg 4326 workaround')
     # the EPSG code 4326 is not supported by SNAP and thus the WKT string has to be defined;
     # in all other cases defining EPSG:{code} will do
     if t_srs == 4326:
@@ -387,7 +387,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
         lin2db = parse_node('lin2db')
         workflow.insert_node(lin2db, before=tc.id)
         lin2db.parameters['sourceBands'] = bandnames[refarea]
-    
+    print('pre shapefile')
     ############################################
     # (optionally) add subset node and add bounding box coordinates of defined shapefile
     # print('-- configuring Subset Node')
@@ -443,7 +443,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     basename = os.path.join(outdir, id.outname_base(basename_extensions))
     extension = suffix if format == 'ENVI' else polarizations[0] + '_' + suffix
     outname = basename + '_' + extension
-    
+    print('pre export extra')
     write = workflow['Write']
     write.parameters['file'] = outname
     write.parameters['formatName'] = format
@@ -492,7 +492,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
             dempar['demName'] = 'SRTM 1Sec HGT'
         dempar['externalDEMFile'] = None
         dempar['externalDEMNoDataValue'] = 0
-    
+    print('post configuring DEM')
     for key, value in dempar.items():
         workflow.set_par(key, value)
     
@@ -523,7 +523,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     ############################################
     # write workflow to file and optionally execute it
     # print('- writing workflow to file')
-    
+    print('writing workflow')
     workflow.write(outname + '_proc')
     
     # execute the newly written workflow
