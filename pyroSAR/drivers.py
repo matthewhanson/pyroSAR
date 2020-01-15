@@ -96,6 +96,7 @@ def identify(scene):
     
     for handler in ID.__subclasses__():
         try:
+            print('handler', handler)
             return handler(scene)
         except (IOError, KeyError):
             pass
@@ -1213,9 +1214,9 @@ class SAFE(ID):
     """
     
     def __init__(self, scene):
-        
+        print('This is the Sentinel-1 class')
         self.scene = os.path.realpath(scene)
-        
+        print('path: ', self.scene)
         self.pattern = r'^(?P<sensor>S1[AB])_' \
                        r'(?P<beam>S1|S2|S3|S4|S5|S6|IW|EW|WV|EN|N1|N2|N3|N4|N5|N6|IM)_' \
                        r'(?P<product>SLC|GRD|OCN)(?:F|H|M|_)_' \
@@ -1238,14 +1239,15 @@ class SAFE(ID):
                           r'(?:[0-9]{6})-(?:[0-9a-f]{6})-' \
                           r'(?P<id>[0-9]{3})' \
                           r'\.xml$'
-        
+        print('do some examination')
         self.examine(include_folders=True)
         
         if not re.match(re.compile(self.pattern), os.path.basename(self.file)):
             raise IOError('folder does not match S1 scene naming convention')
-        
+        print('passed validation of filename')
         # scan the metadata XML files file and add selected attributes to a meta dictionary
         self.meta = self.scanMetadata()
+        print('got me some meta', self.meta)
         self.meta['projection'] = 'GEOGCS["WGS 84",' \
                                   'DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],' \
                                   'PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],' \
