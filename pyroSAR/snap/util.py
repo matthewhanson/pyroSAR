@@ -165,7 +165,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
         id = ids[0]
     else:
         raise TypeError("'infile' must be of type str, list or pyroSAR.ID")
-    print('identified')
+    print('identified', flush=True)
     if id.is_processed(outdir):
         print('scene {} already processed'.format(id.outname_base()))
         return
@@ -174,13 +174,13 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
         os.makedirs(outdir)
     ############################################
     # general setup
-    print('general setup')
+    print('general setup', flush=True)
     if id.sensor in ['ASAR', 'ERS1', 'ERS2']:
         formatName = 'ENVISAT'
     elif id.sensor in ['S1A', 'S1B']:
-        print('getting osv')
+        print('getting osv', flush=True)
         id.getOSV()
-        print('post osv')
+        print('post osv', flush=True)
         if id.product == 'SLC':
             raise RuntimeError('Sentinel-1 SLC data is not supported yet')
         formatName = 'SENTINEL-1'
@@ -202,8 +202,8 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
         raise RuntimeError('polarizations must be of type str or list')
     
     format = 'GeoTiff-BigTIFF' if len(polarizations) == 1 and export_extra is None else 'ENVI'
-    # print(polarizations)
-    # print(format)
+    print(polarizations, flush=True)
+    print(format, flush=True)
     
     bandnames = dict()
     bandnames['int'] = ['Intensity_' + x for x in polarizations]
@@ -222,7 +222,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     read.parameters['file'] = id.scene
     read.parameters['formatName'] = formatName
     readers = [read.id]
-    print('starting creating base workflow')
+    print('starting creating base workflow', flush=True)
     if isinstance(infile, list):
         for i in range(1, len(infile)):
             readn = parse_node('Read')
@@ -257,12 +257,12 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     orbitType = orbit_lookup[formatName]
     if formatName == 'ENVISAT' and id.acquisition_mode == 'WSM':
         orbitType = 'DORIS Precise VOR (ENVISAT) (Auto Download)'
-    print('apply orbit file')
+    print('apply orbit file', flush=True)
     orb = workflow['Apply-Orbit-File']
     orb.parameters['orbitType'] = orbitType
     ############################################
     # calibration node configuration
-    # print('-- configuring Calibration Node')
+    print('-- configuring Calibration Node', flush=True)
     cal = workflow['Calibration']
     cal.parameters['selectedPolarisations'] = polarizations
     cal.parameters['sourceBands'] = bandnames['int']
@@ -279,7 +279,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
     last = cal.id
     ############################################
     # terrain flattening node configuration
-    # print('-- configuring Terrain-Flattening Node')
+    print('-- configuring Terrain-Flattening Node', flush=True)
     if terrainFlattening:
         tf = parse_node('Terrain-Flattening')
         workflow.insert_node(tf, before=last)

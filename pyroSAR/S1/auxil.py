@@ -393,7 +393,7 @@ class OSV(object):
         print('downloading {} file{}'.format(len(downloads), '' if len(downloads) == 1 else 's'))
         #with pb.ProgressBar(max_value=len(downloads)) as pbar:
         for remote, local, basename in downloads:
-            print('download: ', remote, local, basename)
+            print('download: ', remote, local, basename, flush=True)
             infile = requests.get(remote)
             with zf.ZipFile(file=local,
                             mode='w',

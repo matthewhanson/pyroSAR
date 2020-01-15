@@ -91,12 +91,13 @@ def identify(scene):
     start: 20180829T170656
     stop: 20180829T170721
     """
+    print('identify', scene, flush=True)
     if not os.path.exists(scene):
         raise OSError("No such file or directory: '{}'".format(scene))
     
     for handler in ID.__subclasses__():
         try:
-            print('handler', handler)
+            print('handler', handler, flush=True)
             return handler(scene)
         except (IOError, KeyError):
             pass
@@ -1214,9 +1215,9 @@ class SAFE(ID):
     """
     
     def __init__(self, scene):
-        print('This is the Sentinel-1 class')
+        print('This is the Sentinel-1 class', flush=True)
         self.scene = os.path.realpath(scene)
-        print('path: ', self.scene)
+        print('path: ', self.scene, flush=True)
         self.pattern = r'^(?P<sensor>S1[AB])_' \
                        r'(?P<beam>S1|S2|S3|S4|S5|S6|IW|EW|WV|EN|N1|N2|N3|N4|N5|N6|IM)_' \
                        r'(?P<product>SLC|GRD|OCN)(?:F|H|M|_)_' \
