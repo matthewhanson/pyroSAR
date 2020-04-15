@@ -187,7 +187,7 @@ def execute(xmlfile, cleanup=True, gpt_exceptions=None, gpt_args=None, verbose=T
 
 def gpt(xmlfile, groups=None, cleanup=True,
         gpt_exceptions=None, gpt_args=None,
-        removeS1BorderNoiseMethod='pyroSAR', basename_extensions=None):
+        removeS1BorderNoiseMethod='pyroSAR', basename_extensions=None, verbose=False):
     """
     wrapper for ESA SNAP's Graph Processing Tool GPT.
     Input is a readily formatted workflow XML file as
@@ -277,9 +277,9 @@ def gpt(xmlfile, groups=None, cleanup=True,
         if groups is not None:
             subs = split(xmlfile, groups)
             for sub in subs:
-                execute(sub, cleanup=cleanup, gpt_exceptions=gpt_exceptions, gpt_args=gpt_args)
+                execute(sub, cleanup=cleanup, gpt_exceptions=gpt_exceptions, gpt_args=gpt_args, verbose=verbose)
         else:
-            execute(xmlfile, cleanup=cleanup, gpt_exceptions=gpt_exceptions, gpt_args=gpt_args)
+            execute(xmlfile, cleanup=cleanup, gpt_exceptions=gpt_exceptions, gpt_args=gpt_args, verbose=verbose)
     except RuntimeError as e:
         if cleanup and os.path.exists(outname):
             shutil.rmtree(outname, onerror=windows_fileprefix)

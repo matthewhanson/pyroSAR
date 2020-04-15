@@ -550,7 +550,7 @@ def geocode(infile, outdir, t_srs=4326, tr=20, polarizations='all', shapefile=No
             groups = groupbyWorkers(outname + '_proc.xml', groupsize)
             gpt(outname + '_proc.xml', groups=groups, cleanup=cleanup,
                 gpt_exceptions=gpt_exceptions, gpt_args=gpt_args,
-                removeS1BorderNoiseMethod=removeS1BorderNoiseMethod)
+                removeS1BorderNoiseMethod=removeS1BorderNoiseMethod, verbose=False)
         except RuntimeError as e:
             print(str(e))
             with open(outname + '_error.log', 'w') as log:
