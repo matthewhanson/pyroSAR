@@ -145,20 +145,25 @@ def execute(xmlfile, cleanup=True, gpt_exceptions=None, gpt_args=None, verbose=T
     cmd.append(xmlfile)
     # execute the workflow
     proc = sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.PIPE)
-    out, err = proc.communicate()
-    out = out.decode('utf-8') if isinstance(out, bytes) else out
-    err = err.decode('utf-8') if isinstance(err, bytes) else err
+    while True:
+        line = proc.stdout.readline().rstrip()
+        if not line:
+            break
+        print(line)
+    #out, err = proc.communicate()
+    #out = out.decode('utf-8') if isinstance(out, bytes) else out
+    #err = err.decode('utf-8') if isinstance(err, bytes) else err
     
     # check for a message indicating an unknown parameter,
     # which can easily be removed from the workflow
     pattern = r"Error: \[NodeId: (?P<id>[a-zA-Z0-9-_]*)\] " \
               r"Operator \'[a-zA-Z0-9-_]*\': " \
               r"Unknown element \'(?P<par>[a-zA-Z]*)\'"
-    match = re.search(pattern, err)
+    #match = re.search(pattern, err)
     
     if proc.returncode == 0:
         return
-    
+    '''
     # delete unknown parameters and run the modified workflow
     elif proc.returncode == 1 and match is not None:
         replace = match.groupdict()
@@ -183,7 +188,7 @@ def execute(xmlfile, cleanup=True, gpt_exceptions=None, gpt_args=None, verbose=T
             elif os.path.isdir(outname):
                 shutil.rmtree(outname, onerror=windows_fileprefix)
         raise RuntimeError(submessage.format(out, err, os.path.basename(xmlfile), proc.returncode))
-
+    '''
 
 def gpt(xmlfile, groups=None, cleanup=True,
         gpt_exceptions=None, gpt_args=None,
